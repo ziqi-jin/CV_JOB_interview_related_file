@@ -1,4 +1,3 @@
-
 - [数据结构定义](#数据结构定义)
   - [输入处理](#输入处理)
   - [链表](#链表)
@@ -42,11 +41,15 @@
   - [Canny](#canny)
   - [NMS-Kevin](#nms-kevin)
 - [深度学习基础](#深度学习基础)
+  - [归一化和标准化](#归一化和标准化)
   - [SGD-Junliang](#sgd-junliang)
   - [MaxPooling-kevin](#maxpooling-kevin)
   - [Avg Pooling-kevin](#avg-pooling-kevin)
   - [CONV-kevin](#conv-kevin)
   - [BN-kevin](#bn-kevin)
+- [前沿论文](#前沿论文)
+  - [ReID](#reid)
+
 # 数据结构定义
 
 ## 输入处理
@@ -56,6 +59,8 @@ N, K, M = input().strip().split(' ')
 # 输出
 print()
 ```
+
+
 
 ## 链表
 
@@ -484,7 +489,6 @@ class Solution:
 ## 最长回文子序列
 
 ```python
-
 class Solution:
     def longestPalindromeSubseq(self, s: str) -> int:
         n = len(s)
@@ -831,7 +835,6 @@ class Solution:
 ## 二叉树最小深度-层序遍历
 
 ```python
-
 class Solution(object):
     def minDepth(self, root):
         """
@@ -1140,6 +1143,20 @@ def nms(det, thres):
 
 # 深度学习基础
 
+## 归一化和标准化
+
+- 归一化：
+
+$$
+\frac{x-min}{max - min}
+$$
+
+- 标准化：
+
+$$
+\frac{x-\mu}{\sigma}
+$$
+
 ## SGD-Junliang
 
 ```python
@@ -1395,7 +1412,7 @@ class BatchNorm(nn.Module):
         return Y
 ```
 
+# 前沿论文
 
-
-
+## ReID
 
