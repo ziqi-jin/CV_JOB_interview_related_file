@@ -8,6 +8,7 @@
   - [堆](#堆)
   - [二分搜索框架](#二分搜索框架)
 - [utils](#utils)
+  - [单调栈模板](#单调栈模板)
   - [翻转链表](#翻转链表)
   - [找链表中点](#找链表中点)
   - [二进制](#二进制)
@@ -314,9 +315,27 @@ int right_bound(int[] nums, int target) {
 
 # utils
 
+## 单调栈模板
+
+```python
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        stack = []
+        res = [0]*len(temperatures)
+        # 从后往前入栈
+        for i in range(len(temperatures)-1,-1,-1):
+            while stack and temperatures[stack[-1]]<=temperatures[i]:
+                stack.pop()
+            if stack:
+                # 这里要求是距离就 i 入栈，结果计算和i的距离，如果是数值，就直接数值入栈
+                res[i] = stack[-1]-i
+            else:
+                res[i] = 0
+            stack.append(i)
+        return res
+
+```
+
 ## 翻转链表
-
-
 
 ```python
     def reverseList(self, head: ListNode) -> ListNode:
