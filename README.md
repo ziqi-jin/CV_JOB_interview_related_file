@@ -8,13 +8,19 @@
   - [堆](#堆)
   - [二分搜索框架](#二分搜索框架)
 - [utils](#utils)
+  - [DFS+onPATH+visited](#dfsonpathvisited)
+  - [BFS + Indegree](#bfs--indegree)
   - [单调栈模板](#单调栈模板)
   - [翻转链表](#翻转链表)
+  - [list 翻转](#list-翻转)
   - [找链表中点](#找链表中点)
   - [二进制](#二进制)
   - [split 小计](#split-小计)
   - [滑动窗口](#滑动窗口)
 - [力扣原题](#力扣原题)
+  - [有向无环图遍历](#有向无环图遍历)
+  - [课程表-拓扑排序判断环](#课程表-拓扑排序判断环)
+  - [课程表2，拓扑排序，后续遍历图并最后将list翻转](#课程表2拓扑排序后续遍历图并最后将list翻转)
   - [每日温度-单调栈](#每日温度-单调栈)
   - [合并k个升序链表](#合并k个升序链表)
   - [二叉树层序遍历](#二叉树层序遍历)
@@ -35,6 +41,8 @@
   - [岛屿数量，DFS](#岛屿数量dfs)
   - [三数之和](#三数之和)
 - [CV 基础](#cv-基础)
+  - [卷积的旋转不变性](#卷积的旋转不变性)
+  - [平移不变性](#平移不变性)
   - [高通滤波 ，低通滤波](#高通滤波-低通滤波)
   - [直方图均衡V1-kevin](#直方图均衡v1-kevin)
   - [直方图均衡V2-jeffin](#直方图均衡v2-jeffin)
@@ -43,6 +51,7 @@
   - [Canny](#canny)
   - [NMS-Kevin](#nms-kevin)
 - [深度学习基础](#深度学习基础)
+  - [batchnorm](#batchnorm)
   - [归一化和标准化](#归一化和标准化)
   - [SGD-Junliang](#sgd-junliang)
   - [MaxPooling-kevin](#maxpooling-kevin)
@@ -315,10 +324,196 @@ int right_bound(int[] nums, int target) {
 
 # utils
 
+## DFS+onPATH+visited
+
+```python
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        # 判断是否有环，有环无法完成
+        def build_graph(prerequisites,numCourses):
+            graph = [[] for i in range(numCourses)]
+            for p in prerequisites:
+              # 注意这里是反向的
+                froms,to = p[1],p[0]
+                graph[froms].append(to)
+            return graph
+        
+        graph = build_graph(prerequisites,numCourses)
+        has_cycle = False
+        visited = [0]*numCourses
+        on_path = [0]*numCourses
+        def traverse(node_index):
+            # 遍历过这个点return 或者 找到环 return
+            nonlocal has_cycle
+            if on_path[node_index]==1:
+                has_cycle=True
+            if visited[node_index]==1 or has_cycle:
+                return
+            visited[node_index] = 1
+            on_path[node_index] = 1
+            for n in graph[node_index]:
+                traverse(n)
+            on_path[node_index] = 0
+        # 不要忘了 遍历全部节点，要循环所有节点检查
+        for i in range(len(graph)):
+            traverse(i)
+
+        return not has_cycle
+```
+
+
+
+## BFS + Indegree
+
+```java
+// 主函数
+public boolean canFinish(int numCourses, int[][] prerequisites) {
+    // 建图，有向边代表「被依赖」关系
+    List<Integer>[] graph = buildGraph(numCourses, prerequisites);
+    // 构建入度数组
+    int[] indegree = new int[numCourses];
+    for (int[] edge : prerequisites) {
+        int from = edge[1], to = edge[0];
+        // 节点 to 的入度加一
+        indegree[to]++;
+    }
+
+    // 根据入度初始化队列中的节点
+    Queue<Integer> q = new LinkedList<>();
+    for (int i = 0; i < numCourses; i++) {
+        if (indegree[i] == 0) {
+            // 节点 i 没有入度，即没有依赖的节点
+            // 可以作为拓扑排序的起点，加入队列
+            q.offer(i);
+        }
+    }
+
+    // 记录遍历的节点个数
+    int count = 0;
+    // 开始执行 BFS 循环
+    while (!q.isEmpty()) {
+        // 弹出节点 cur，并将它指向的节点的入度减一
+        int cur = q.poll();
+        count++;
+        for (int next : graph[cur]) {
+            indegree[next]--;
+            if (indegree[next] == 0) {
+                // 如果入度变为 0，说明 next 依赖的节点都已被遍历
+                q.offer(next);
+            }
+        }
+    }
+
+    // 如果所有节点都被遍历过，说明不成环
+    return count == numCourses;
+}
+
+
+// 建图函数
+List<Integer>[] buildGraph(int n, int[][] edges) {
+    // 见前文
+}
+
+```
+
+```java
+// 主函数
+public int[] findOrder(int numCourses, int[][] prerequisites) {
+    // 建图，和环检测算法相同
+    List<Integer>[] graph = buildGraph(numCourses, prerequisites);
+    // 计算入度，和环检测算法相同
+    int[] indegree = new int[numCourses];
+    for (int[] edge : prerequisites) {
+        int from = edge[1], to = edge[0];
+        indegree[to]++;
+    }
+
+    // 根据入度初始化队列中的节点，和环检测算法相同
+    Queue<Integer> q = new LinkedList<>();
+    for (int i = 0; i < numCourses; i++) {
+        if (indegree[i] == 0) {
+            q.offer(i);
+        }
+    }
+
+    // 记录拓扑排序结果
+    int[] res = new int[numCourses];
+    // 记录遍历节点的顺序（索引）
+    int count = 0;
+    // 开始执行 BFS 算法
+    while (!q.isEmpty()) {
+        int cur = q.poll();
+        // 弹出节点的顺序即为拓扑排序结果
+        res[count] = cur;
+        count++;
+        for (int next : graph[cur]) {
+            indegree[next]--;
+            if (indegree[next] == 0) {
+                q.offer(next);
+            }
+        }
+    }
+
+    if (count != numCourses) {
+        // 存在环，拓扑排序不存在
+        return new int[]{};
+    }
+    
+    return res;
+}
+
+// 建图函数
+List<Integer>[] buildGraph(int n, int[][] edges) {
+    // 见前文
+}
+
+```
+
+```python
+class Solution:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        # 判断是否有环，有环无法完成
+        def build_graph(prerequisites,numCourses):
+            graph = [[] for i in range(numCourses)]
+            for p in prerequisites:
+                froms,to = p[1],p[0]
+                graph[froms].append(to)
+            return graph
+        # global has_cycle
+        graph = build_graph(prerequisites,numCourses)
+        has_cycle = False
+        visited = [0]*numCourses
+        on_path = [0]*numCourses
+        postorder = []
+        def traverse(node_index):
+            # 遍历过这个点return 或者 找到环 return
+            nonlocal has_cycle
+            if on_path[node_index]==1:
+                has_cycle=True
+            if visited[node_index]==1 or has_cycle:
+                return
+            visited[node_index] = 1
+            on_path[node_index] = 1
+            for n in graph[node_index]:
+                traverse(n)
+            postorder.append(node_index)
+            on_path[node_index] = 0
+        # 不要忘了 遍历全部节点，要循环所有节点检查
+        for i in range(len(graph)):
+            traverse(i)
+
+        if has_cycle:
+            return []
+        else:
+            return postorder[::-1]
+```
+
+
+
 ## 单调栈模板
 
 ```python
-    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
         stack = []
         res = [0]*len(temperatures)
         # 从后往前入栈
@@ -332,10 +527,13 @@ int right_bound(int[] nums, int target) {
                 res[i] = 0
             stack.append(i)
         return res
-
 ```
 
+
+
 ## 翻转链表
+
+
 
 ```python
     def reverseList(self, head: ListNode) -> ListNode:
@@ -349,6 +547,15 @@ int right_bound(int[] nums, int target) {
         return prev
 
 ```
+
+## list 翻转
+
+```python
+list[::-1]
+reversed(list)
+```
+
+
 
 ## 找链表中点
 
@@ -386,6 +593,107 @@ split 函数 如果写 s.split(),无参数, 会去掉字符串中 所有空格�
 
 # 力扣原题
 
+## 有向无环图遍历
+
+```python
+# graph 为 邻接表法，path 在一些图题里面，也可以用一个数组onpath 代替，onpath代表现在所走的路径，visited代表全部访问过的节点，可以理解为onpath是贪食蛇的身体，visited 是他经过的地方
+class Solution:
+    def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
+        #类似回溯
+        res = []
+        n = len(graph)
+        def traverse(path,node_index):
+            path.append(node_index)
+            if node_index == n-1:
+                res.append(path[:])
+            for i in graph[node_index]:
+                traverse(path,i)
+
+            path.pop()
+        traverse([],0)
+        return res
+```
+
+## 课程表-拓扑排序判断环
+
+```python
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        # 判断是否有环，有环无法完成
+        def build_graph(prerequisites,numCourses):
+            graph = [[] for i in range(numCourses)]
+            for p in prerequisites:
+              # 注意这里是反向的
+                froms,to = p[1],p[0]
+                graph[froms].append(to)
+            return graph
+        
+        graph = build_graph(prerequisites,numCourses)
+        has_cycle = False
+        visited = [0]*numCourses
+        on_path = [0]*numCourses
+        def traverse(node_index):
+            # 遍历过这个点return 或者 找到环 return
+            nonlocal has_cycle
+            if on_path[node_index]==1:
+                has_cycle=True
+            if visited[node_index]==1 or has_cycle:
+                return
+            visited[node_index] = 1
+            on_path[node_index] = 1
+            for n in graph[node_index]:
+                traverse(n)
+            on_path[node_index] = 0
+        # 不要忘了 遍历全部节点，要循环所有节点检查
+        for i in range(len(graph)):
+            traverse(i)
+
+        return not has_cycle
+```
+
+## 课程表2，拓扑排序，后续遍历图并最后将list翻转
+
+```python
+class Solution:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        # 判断是否有环，有环无法完成
+        def build_graph(prerequisites,numCourses):
+            graph = [[] for i in range(numCourses)]
+            for p in prerequisites:
+                froms,to = p[1],p[0]
+                graph[froms].append(to)
+            return graph
+        # global has_cycle
+        graph = build_graph(prerequisites,numCourses)
+        has_cycle = False
+        visited = [0]*numCourses
+        on_path = [0]*numCourses
+        postorder = []
+        def traverse(node_index):
+            # 遍历过这个点return 或者 找到环 return
+            nonlocal has_cycle
+            if on_path[node_index]==1:
+                has_cycle=True
+            if visited[node_index]==1 or has_cycle:
+                return
+            visited[node_index] = 1
+            on_path[node_index] = 1
+            for n in graph[node_index]:
+                traverse(n)
+            postorder.append(node_index)
+            on_path[node_index] = 0
+        # 不要忘了 遍历全部节点，要循环所有节点检查
+        for i in range(len(graph)):
+            traverse(i)
+
+        if has_cycle:
+            return []
+        else:
+            return postorder[::-1]
+```
+
+
+
 ## 每日温度-单调栈
 
 ```python
@@ -406,6 +714,7 @@ class Solution:
             stack.append(i)
         return res
 ```
+
 
 
 ## 合并k个升序链表
@@ -988,6 +1297,14 @@ class Solution:
 
 # CV 基础
 
+## 卷积的旋转不变性
+
+- 由于一些pooling操作，使得CNN有一定的旋转不变性
+
+## 平移不变性
+
+- 卷积+ pooling
+
 ## 高通滤波 ，低通滤波
 
 - 高通滤波 高频信息通过，低频信息不要，增加锐度
@@ -1185,6 +1502,21 @@ def nms(det, thres):
 
 # 深度学习基础
 
+## batchnorm
+
+- 训练的时候
+  - 用每个batch的均值和方差
+- 测试的时候
+  - 用之前所有batch的平均的 均值和方差
+- 如果只想冻住batchnorm 不冻住其他参数，则需要 F.batch_norm(training=False), 如果是 nn.Batchnorm2d的话他是module累的 ，也有 training 参数。
+- 有的模型会在使用预训练模型的时候，把batchnorm设置为 training=False，也就是冻住了，因为有的时候新训练的模型batchsize小，batchnorm可能会收到不好的影响，如果给预训练模型的batchnorm 冻住，就可以使用预训练模型的均值和方差。这样有助于训练，并且可以提高运算速度。
+- batchnorm 里面可以学习的东西是 beta 和 gamma
+  - affine 参数为True 可学习
+- track_running_stats=True表示跟踪整个训练过程中的batch的统计特性，得到方差和均值，而不只是仅仅依赖与当前输入的batch的统计特性。相反的，如果track_running_stats=False那么就只是计算当前输入的batch的统计特性中的均值和方差了
+- *num_features*
+  - C of  N C H W
+- [1] https://blog.csdn.net/qq_39777550/article/details/108038677
+
 ## 归一化和标准化
 
 - 归一化：
@@ -1198,6 +1530,8 @@ $$
 $$
 \frac{x-\mu}{\sigma}
 $$
+
+
 
 ## SGD-Junliang
 
@@ -1457,4 +1791,3 @@ class BatchNorm(nn.Module):
 # 前沿论文
 
 ## ReID
-
