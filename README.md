@@ -1508,7 +1508,7 @@ def nms(det, thres):
   - 用每个batch的均值和方差
 - 测试的时候
   - 用之前所有batch的平均的 均值和方差
-- 如果只想冻住batchnorm 不冻住其他参数，则需要 F.batch_norm(training=False), 如果是 nn.Batchnorm2d的话他是module累的 ，也有 training 参数。
+- 如果只想冻住batchnorm 不冻住其他参数，则需要 F.batch_norm(training=False), 如果是 nn.Batchnorm2d的话他是module类的 ，也有 training 参数。
 - 有的模型会在使用预训练模型的时候，把batchnorm设置为 training=False，也就是冻住了，因为有的时候新训练的模型batchsize小，batchnorm可能会收到不好的影响，如果给预训练模型的batchnorm 冻住，就可以使用预训练模型的均值和方差。这样有助于训练，并且可以提高运算速度。
 - batchnorm 里面可以学习的东西是 beta 和 gamma
   - affine 参数为True 可学习
