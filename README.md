@@ -1,3 +1,4 @@
+
 - [数据结构定义](#数据结构定义)
   - [输入处理](#输入处理)
   - [链表](#链表)
@@ -41,6 +42,9 @@
   - [岛屿数量，DFS](#岛屿数量dfs)
   - [三数之和](#三数之和)
 - [CV 基础](#cv-基础)
+  - [实时怎么定义](#实时怎么定义)
+  - [空洞卷积](#空洞卷积)
+  - [mAP](#map)
   - [卷积的旋转不变性](#卷积的旋转不变性)
   - [平移不变性](#平移不变性)
   - [高通滤波 ，低通滤波](#高通滤波-低通滤波)
@@ -51,6 +55,9 @@
   - [Canny](#canny)
   - [NMS-Kevin](#nms-kevin)
 - [深度学习基础](#深度学习基础)
+  - [多标签分类，二分类，多分类](#多标签分类二分类多分类)
+  - [triplet loss（hard mining）](#triplet-losshard-mining)
+  - [表征学习与度量学习的loss](#表征学习与度量学习的loss)
   - [batchnorm](#batchnorm)
   - [归一化和标准化](#归一化和标准化)
   - [SGD-Junliang](#sgd-junliang)
@@ -58,9 +65,15 @@
   - [Avg Pooling-kevin](#avg-pooling-kevin)
   - [CONV-kevin](#conv-kevin)
   - [BN-kevin](#bn-kevin)
+- [python](#python)
+  - [可变类型与不可变类型](#可变类型与不可变类型)
+  - [闭包](#闭包)
+- [torch](#torch)
+  - [sampler](#sampler)
+  - [dataloader](#dataloader)
+  - [dataparallel 和 distributeddataparallel](#dataparallel-和-distributeddataparallel)
 - [前沿论文](#前沿论文)
   - [ReID](#reid)
-
 # 数据结构定义
 
 ## 输入处理
@@ -1297,6 +1310,18 @@ class Solution:
 
 # CV 基础
 
+## 实时怎么定义
+
+- 可以根据人眼，24fps人就认为是联系的出发，大于24fps可以理解为实时。
+
+## 空洞卷积
+
+- 在和下采样卷计算量相同的情况下，保持更大的特征图，也就是特征图的分辨率更高
+
+## mAP
+
+
+
 ## 卷积的旋转不变性
 
 - 由于一些pooling操作，使得CNN有一定的旋转不变性
@@ -1501,6 +1526,21 @@ def nms(det, thres):
 ```
 
 # 深度学习基础
+
+## 多标签分类，二分类，多分类
+
+- 多标签分类和 二分类，用sigmod+bceloss
+- 多分类用 softmax + crossentropyloss
+- 多分类一般人为分类的目标只有一个，而多标签分类用于分类的目标多个，如在yolov3中将多分类loss 改成了多标签分类loss，考虑到在同一个框中的物体，可能会属于多个类别。
+
+## triplet loss（hard mining）
+
+- 在reid 任务中，将一个batch包含P个人，每个人K张图片，P*K = batchsize，然后和P的id相同的为positive ，和 P的id不同为negetive。by the way，这种P * K的sample方式叫做pksampler，也可以有助于reid涨点。
+
+## 表征学习与度量学习的loss
+
+- 表征学习：代表 softmax ，arcface学习一个表示来处理任务。
+- 度量学习：代表triplet，学习距离，拉近拉远。
 
 ## batchnorm
 
@@ -1788,6 +1828,34 @@ class BatchNorm(nn.Module):
         return Y
 ```
 
+# python
+
+## 可变类型与不可变类型
+
+- 可变类型：dict list set，**只是改变了变量值，不会新建一个对象，变量引用的对象的地址不会变化**
+- 不可变 : Number( float int)  str tuple， **不允许值发生变化，若改变了变量的值，相当于新建了一个对象，对于相同值的对象，内存中只有一个对象**
+- python 6 个标准类型：Number String List Tuple Set Dict
+
+## 闭包
+
+- 为什么会这样呢？原因就在于create是go的父函数，而go被赋给了一个全局变量，这导致go始终在内存中，而go的存在依赖于create，因此create也始终在内存中，不会在调用结束后，被垃圾回收机制（garbage collection）回收。https://zhuanlan.zhihu.com/p/453787908
+- 闭包的作用：读取函数内部的变量和让函数内部的局部变量始终保持在内存中
+
+# torch
+
+## sampler
+
+- torch.utils.data.DataLoader()中，如果设置了sampler参数，那么，shuffle参数的值应该设置为FALSE，这两个参数是互斥的。
+
+## dataloader
+
+- pin_memory : 锁页内存，可以从磁盘读取不重叠的数据。
+
+## dataparallel 和 distributeddataparallel
+
+- 数据并行与模型并行
+
 # 前沿论文
 
 ## ReID
+
