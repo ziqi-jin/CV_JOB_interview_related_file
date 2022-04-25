@@ -1,4 +1,3 @@
-
 - [数据结构定义](#数据结构定义)
   - [输入处理](#输入处理)
   - [链表](#链表)
@@ -54,6 +53,10 @@
   - [sobel 算子-jeffin](#sobel-算子-jeffin)
   - [Canny](#canny)
   - [NMS-Kevin](#nms-kevin)
+- [Mindspore](#mindspore)
+- [机器学习基础](#机器学习基础)
+  - [SVM](#svm)
+  - [bagging，boosting，stacking](#baggingboostingstacking)
 - [深度学习基础](#深度学习基础)
   - [多标签分类，二分类，多分类](#多标签分类二分类多分类)
   - [triplet loss（hard mining）](#triplet-losshard-mining)
@@ -66,8 +69,12 @@
   - [CONV-kevin](#conv-kevin)
   - [BN-kevin](#bn-kevin)
 - [python](#python)
+  - [生成器 迭代器](#生成器-迭代器)
   - [可变类型与不可变类型](#可变类型与不可变类型)
   - [闭包](#闭包)
+  - [with 上下文管理器](#with-上下文管理器)
+  - [装饰器](#装饰器)
+  - [GIL 全局解释器锁](#gil-全局解释器锁)
 - [torch](#torch)
   - [sampler](#sampler)
   - [dataloader](#dataloader)
@@ -1320,6 +1327,19 @@ class Solution:
 
 ## mAP
 
+$$
+precesion = \frac{TP}{TP+FP}
+$$
+
+
+$$
+recall = \frac{TP}{TP+FN}
+$$
+
+- TF表示是否被正确分类
+- PN代表原本是正样本负样本
+- 根据不同的iou阈值，某个类别会得到不同 的 PR，P和R为横纵坐标绘制的曲线的面积叫AP，所有类别AP平均值为mAP
+
 
 
 ## 卷积的旋转不变性
@@ -1524,6 +1544,64 @@ def nms(det, thres):
         idx_order = idx_order[_keep]
     return keep
 ```
+
+# Mindspore
+
+- context.set_context ,设置静态图，动态图模式
+
+- nn.cell  == nn.Module
+
+- callback 一些工具比如 lossmonitor，timemonitor。
+
+- model.train（） 输入 epoch，dataset，callbacks，datasink
+
+- optimizer 写到了模型的forward（construct）里面
+
+- 对数据集的操作，如数据增强
+
+  ```python
+  dataset.map(operations=trans, input_columns=["image"], python_multiprocessing=use_multiprocessing,
+                  num_parallel_workers=num_parallel_workers)
+  # trans 是数据增强的list，input columns 是 对应的处理内容
+  
+  ```
+
+- from mindspore.ops import composite as C ;C.GradOperation 求梯度函数
+
+- ```python
+  optim = nn.Momentum(net.trainable_params(), 0.1, 0.9)
+  ```
+
+- ```python
+  model = Model(net, loss_fn=loss, optimizer=optim)
+  #Model 类把 net loss opt都包起来，内部实现，也可以自己实现一个 net，包含这些，然后用Model套起来，之后就可以train
+   model.train(args_opt.epoch_size, dataset, callbacks=callback, dataset_sink_mode=dataset_sink_mode)
+  
+  ```
+
+  `n.WithLossCell`接口可以将前向网络与损失函数连接起来
+
+
+
+# 机器学习基础
+
+
+
+## SVM
+
+- from sklearn.svm import svc , svm分类器
+- 核函数：SVM 的 kernel 一般有三种， linear， poly（多项式），rbf（高斯）
+- 软间隔：
+
+## bagging，boosting，stacking
+
+- 模型训练结果收 偏差 bias ，方差 v， 噪声三个因素影响
+- 准对于降低偏差，boosting stacking，如 
+- 针对于降低方差，bagging，stacking 如 随机森林，base learner没那么稳定的时候，它对于下降方差的效果会好。
+- 降低噪声，用更好的数据
+- bagging: bagging就是训练多个模型，每个模型就是通过在训练数据中通过bootstrap采样训练而来； bootstrap就是每一次用m个样本，随机在训练数据中采样m个样本，且会放回继续采样,bagging的主要效果是能够降低方差，特别是当整个用来做bagging的模型是不稳定的模型的时候效果最佳（随机森林）
+- boosting: Boosting是说把n个弱一点的模型组合在一起变成一个比较强的模型，用于降低偏差, 所以boosting要使用弱一点的模型来做，太强的模型会过拟合。Gradient boosting 是boosting的一种，每一次弱的模型是去拟合 在标号上的残差，可以认为是每次去拟合给定损失函数的负梯度方向 。 boosting 每个小模型的标签是前一个模型的结果与gt的残差。
+- stacking： 将多个不同的模型组合起来，bagging是多个相同的模型，继承学习
 
 # 深度学习基础
 
@@ -1830,6 +1908,11 @@ class BatchNorm(nn.Module):
 
 # python
 
+## 生成器 迭代器
+
+- **生成器只能遍历一次**
+- 
+
 ## 可变类型与不可变类型
 
 - 可变类型：dict list set，**只是改变了变量值，不会新建一个对象，变量引用的对象的地址不会变化**
@@ -1840,6 +1923,47 @@ class BatchNorm(nn.Module):
 
 - 为什么会这样呢？原因就在于create是go的父函数，而go被赋给了一个全局变量，这导致go始终在内存中，而go的存在依赖于create，因此create也始终在内存中，不会在调用结束后，被垃圾回收机制（garbage collection）回收。https://zhuanlan.zhihu.com/p/453787908
 - 闭包的作用：读取函数内部的变量和让函数内部的局部变量始终保持在内存中
+
+## with 上下文管理器
+
+- with a_class as a
+- 在这个过程中需要给 a_class 实现两个方法 _ __enter_ __和 _ __exit_ __, 这样在使用with的时候 就会在开始和结束调用这两个函数。
+
+## 装饰器
+
+- 顾名思义，就是给函数在他外面装饰一下，这里用到了闭包的思想。装饰器分为有参数的装饰器和无参数的装饰器，无参数的装饰器定义是，函数（函数（））。有参数的是 函数（函数（函数（））），第一层可以输入参数，第二层是 要装饰的func。
+- 常见装饰器 @wraps(funca), 它接受一个函数来进行装饰，并加入了复制函数名称、注释文档、参数列表等等的功能。这可以让我们在装饰器里面访问在装饰之前的函数的属性。如 加完 wraps之后，函数的 ._ __name _ __会变成funca的名字
+
+```python
+from functools import wraps
+ 
+def a_new_decorator(a_func):
+    @wraps(a_func)
+    def wrapTheFunction():
+        print("I am doing some boring work before executing a_func()")
+        a_func()
+        print("I am doing some boring work after executing a_func()")
+    return wrapTheFunction
+ 
+@a_new_decorator
+def a_function_requiring_decoration():
+    """Hey yo! Decorate me!"""
+    print("I am the function which needs some decoration to "
+          "remove my foul smell")
+ 
+print(a_function_requiring_decoration.__name__)
+# Output: a_function_requiring_decoration
+# 不加wraps
+# Output: wrapTheFunction
+
+```
+
+
+
+## GIL 全局解释器锁
+
+- python 的进程中的线程不能并行，因为 GIL，每个线程实际上是在伪并行（交替执行），每次只有一个线程拿到GIL可以执行程序。
+- 如果想并行 需要并行进程，而不是并行线程。
 
 # torch
 
@@ -1858,4 +1982,3 @@ class BatchNorm(nn.Module):
 # 前沿论文
 
 ## ReID
-
