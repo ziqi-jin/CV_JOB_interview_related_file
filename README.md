@@ -79,8 +79,6 @@
   - [sampler](#sampler)
   - [dataloader](#dataloader)
   - [dataparallel 和 distributeddataparallel](#dataparallel-和-distributeddataparallel)
-- [前沿论文](#前沿论文)
-  - [ReID](#reid)
 # 数据结构定义
 
 ## 输入处理
@@ -1979,6 +1977,3 @@ print(a_function_requiring_decoration.__name__)
 
 - 数据并行与模型并行
 
-# 前沿论文
-
-## ReID
