@@ -41,6 +41,8 @@
   - [岛屿数量，DFS](#岛屿数量dfs)
   - [三数之和](#三数之和)
 - [检测](#检测)
+  - [同一个grid的预测box 如何选择](#同一个grid的预测box-如何选择)
+  - [检测算法三问](#检测算法三问)
   - [金字塔与ssd的区别](#金字塔与ssd的区别)
   - [SSD的正负样本选择](#ssd的正负样本选择)
   - [单阶段目标检测的样本不均衡问题](#单阶段目标检测的样本不均衡问题)
@@ -88,6 +90,11 @@
   - [sampler](#sampler)
   - [dataloader](#dataloader)
   - [dataparallel 和 distributeddataparallel](#dataparallel-和-distributeddataparallel)
+- [前沿论文](#前沿论文)
+  - [ReID](#reid)
+  - [点云](#点云)
+    - [pointnet：](#pointnet)
+
 # 数据结构定义
 
 ## 输入处理
@@ -1324,6 +1331,17 @@ class Solution:
 
 # 检测
 
+## 同一个grid的预测box 如何选择
+
+-  yolov1 是选置信度大的
+- 大部分是按IOU来选择box
+
+## 检测算法三问
+
+- 怎么选择正负样本
+- 怎么处理正负样本
+- 怎么算loss
+
 ## 金字塔与ssd的区别
 
 - 金字塔是多个不同层的特征融合成一个size，ssd是不融合，直接用多个size去做预测
@@ -1414,10 +1432,33 @@ recall = \frac{TP}{TP+FN}
 $$
 
 - TF表示是否被正确分类
+
 - PN代表原本是正样本负样本
-- 根据不同的iou阈值，某个类别会得到不同 的 PR，P和R为横纵坐标绘制的曲线的面积叫AP，所有类别AP平均值为mAP
 
+- 根据不同的置信度阈值，某个类别会得到不同 的 PR，P和R为横纵坐标绘制的曲线的面积叫AP，所有类别AP平均值为mAP
 
+- 如何绘制PR曲线：
+
+  - 给一个置信度的阈值，比如0.3，如何大于这个置信度的box，按照置信度从大到小排序，假设有K个box，计算[0,k] ,k 属于 K，区间的recall 和 precision，得到K个点，绘制成曲线，就是PR曲线。
+
+- 因此在检测算法中，
+  $$
+  precesion = \frac{正确结果总数(TP)}{检测框总数(TP+FP)}
+  ,  
+  
+  recall = \frac{正确结果总数}{GT框总数(TP+FN)}
+  $$
+
+- 在检测算法中，只需要计算 TP和FP，就可以计算precision和recall，recall可以用GT总数和TP计算，和算法无关。 
+- 检测算法AP 完整过程
+  - 设置一个confidence阈值，取得前K个 预测Box，（也可以不设置阈值，直接取前K个，没有区别）
+  - 判断每一个预测 Box 是 TP 还 FP，判断方法： 和GT框匹配的大于IOU阈值（如0.5）, 并且置信度最高的那个Box，为TP，其他都是为FP。
+  - 将K个Box按照置信度排序，计算[0,1],[0,2],[0,k]....[0,K],区间的Recall 和 precision，绘制成PR曲线，计算PR曲线的面积就是AP
+  - precision 如何计算：
+    - ([0,k] 区间的 TP个数)/ ([0,k] 区间的检测框总数)
+  - recall 如何计算：
+    - ([0,k] 区间的 TP个数)/ (整个区间的GT框总数)
+      - 注意：recall的分母不会随着 [0,k] 区间发生变化，一直是整个数据集 GTbox的总数
 
 ## 卷积的旋转不变性
 
@@ -2063,3 +2104,14 @@ print(a_function_requiring_decoration.__name__)
 ## dataparallel 和 distributeddataparallel
 
 - 数据并行与模型并行
+
+# 前沿论文
+
+## ReID
+
+## 点云
+
+### pointnet：
+
+- 输入 n*3,(3是三维坐标，n是点的数量)
+- 用一个 对称函数处理（maxpooling）
