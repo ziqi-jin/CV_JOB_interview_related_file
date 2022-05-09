@@ -84,6 +84,7 @@
   - [CONV-kevin](#conv-kevin)
   - [BN-kevin](#bn-kevin)
 - [python](#python)
+  - [字母转ascii码](#字母转ascii码)
   - [生成器 迭代器](#生成器-迭代器)
   - [可变类型与不可变类型](#可变类型与不可变类型)
   - [闭包](#闭包)
@@ -94,7 +95,10 @@
   - [sampler](#sampler)
   - [dataloader](#dataloader)
   - [dataparallel 和 distributeddataparallel](#dataparallel-和-distributeddataparallel)
-
+- [前沿论文](#前沿论文)
+  - [ReID](#reid)
+  - [点云](#点云)
+    - [pointnet：](#pointnet)
 # 数据结构定义
 
 ## 输入处理
@@ -2127,6 +2131,18 @@ class BatchNorm(nn.Module):
 
 # python
 
+## 字母转ascii码
+
+- 自带 ord() 函数
+
+  ```python
+  a = 'a'
+  print(ord(a))
+  # 97
+  ```
+
+  
+
 ## 生成器 迭代器
 
 - **生成器只能遍历一次**
@@ -2197,3 +2213,14 @@ print(a_function_requiring_decoration.__name__)
 ## dataparallel 和 distributeddataparallel
 
 - 数据并行与模型并行
+
+# 前沿论文
+
+## ReID
+
+## 点云
+
+### pointnet：
+
+- 输入 n*3,(3是三维坐标，n是点的数量)
+- 用一个 对称函数处理（maxpooling）
