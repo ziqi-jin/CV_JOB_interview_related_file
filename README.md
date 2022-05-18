@@ -2235,6 +2235,7 @@ print(a_function_requiring_decoration.__name__)
 - python 的进程中的线程不能并行，因为 GIL，每个线程实际上是在伪并行（交替执行），每次只有一个线程拿到GIL可以执行程序。
 - 如果想并行 需要并行进程，而不是并行线程。
 
+
 # torch
 
 ## sampler
