@@ -68,6 +68,7 @@
   - [NMS-Kevin](#nms-kevin)
 - [Mindspore](#mindspore)
 - [机器学习基础](#机器学习基础)
+  - [正则方法](#正则方法)
   - [SVM](#svm)
   - [bagging，boosting，stacking](#baggingboostingstacking)
 - [深度学习基础](#深度学习基础)
@@ -96,10 +97,6 @@
   - [sampler](#sampler)
   - [dataloader](#dataloader)
   - [dataparallel 和 distributeddataparallel](#dataparallel-和-distributeddataparallel)
-- [前沿论文](#前沿论文)
-  - [ReID](#reid)
-  - [点云](#点云)
-    - [pointnet：](#pointnet)
 
 # 数据结构定义
 
@@ -1804,7 +1801,35 @@ def nms(det, thres):
 
 # 机器学习基础
 
+## 正则方法
 
+- 用来避免过拟合
+
+- 常用的正则方法
+
+  - L1/L2正则化，在loss函数后面直接加
+
+  - L1正则： 
+    $$
+    Loss = L(w)+\lambda\sum_1^n \left|w_i\right|
+    $$
+    
+
+    
+
+  - L2 正则：
+    $$
+    Loss = L(w)+\lambda\sum_1^n w_i^2
+    $$
+    
+
+  - 
+
+  - dropout
+
+  - ![Screen Shot 2015-08-26 at 21.56.02](https://i2.wp.com/vimsky.com/wp-content/uploads/2015/08/Screen-Shot-2015-08-26-at-21.56.02.png)
+
+  - 如图假设优化参数有2个，可以画出二维的参数w1 w2的取值范围，绿色的线可以理解为loss项的w1w2绘制的线，黑色线是正则项的取值范围，可以看出L1容易得到一个w为0，另一个不为0的解，也就是稀疏解，而L2容易得到w1w2都是很小的数的解。
 
 ## SVM
 
@@ -2231,10 +2256,8 @@ print(a_function_requiring_decoration.__name__)
 
 ## GIL 全局解释器锁
 
-
 - python 的进程中的线程不能并行，因为 GIL，每个线程实际上是在伪并行（交替执行），每次只有一个线程拿到GIL可以执行程序。
 - 如果想并行 需要并行进程，而不是并行线程。
-
 
 # torch
 
@@ -2249,14 +2272,3 @@ print(a_function_requiring_decoration.__name__)
 ## dataparallel 和 distributeddataparallel
 
 - 数据并行与模型并行
-
-# 前沿论文
-
-## ReID
-
-## 点云
-
-### pointnet：
-
-- 输入 n*3,(3是三维坐标，n是点的数量)
-- 用一个 对称函数处理（maxpooling）
