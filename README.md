@@ -86,7 +86,9 @@
   - [CONV-kevin](#conv-kevin)
   - [BN-kevin](#bn-kevin)
 - [python](#python)
-  - [笛卡尔积](#笛卡尔积)
+  - [sorted](#sorted)
+- [按照 第二个数排队](#按照-第二个数排队)
+  - [字母转ascii码](#字母转ascii码)
   - [生成器 迭代器](#生成器-迭代器)
   - [可变类型与不可变类型](#可变类型与不可变类型)
   - [闭包](#闭包)
@@ -97,7 +99,7 @@
   - [sampler](#sampler)
   - [dataloader](#dataloader)
   - [dataparallel 和 distributeddataparallel](#dataparallel-和-distributeddataparallel)
-
+- [前沿论文](#前沿论文)
 # 数据结构定义
 
 ## 输入处理
@@ -2169,6 +2171,22 @@ class BatchNorm(nn.Module):
 
 # python
 
+## sorted
+
+- sorted 函数有3个参数可调,cmp , key, reverse
+
+- cmp 是比较函数 和 cpp中类似，cmp=func，func有两个参数a，b可以自定义比较的操作
+
+- key 也是传入一个函数func，这个函数的有一个参数，代表比较数组中的一个item，return 比较需要参照的元素即可
+
+- ```python
+  a = [(123,1),(1212,33),(12,3)]
+  # 按照 第二个数排队
+  b = sorted(a,key = lambda x:x[1])
+  ```
+
+- 
+
 ## 笛卡尔积
 
 - ```python
@@ -2272,3 +2290,5 @@ print(a_function_requiring_decoration.__name__)
 ## dataparallel 和 distributeddataparallel
 
 - 数据并行与模型并行
+
+# 前沿论文
