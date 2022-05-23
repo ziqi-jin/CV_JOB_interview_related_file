@@ -91,6 +91,7 @@
   - [字母转ascii码](#字母转ascii码)
   - [生成器 迭代器](#生成器-迭代器)
   - [可变类型与不可变类型](#可变类型与不可变类型)
+  - [什么数据类型可以被哈希（set()）](#什么数据类型可以被哈希set)
   - [闭包](#闭包)
   - [with 上下文管理器](#with-上下文管理器)
   - [装饰器](#装饰器)
@@ -100,6 +101,9 @@
   - [dataloader](#dataloader)
   - [dataparallel 和 distributeddataparallel](#dataparallel-和-distributeddataparallel)
 - [前沿论文](#前沿论文)
+  - [ReID](#reid)
+  - [点云](#点云)
+    - [pointnet：](#pointnet)
 # 数据结构定义
 
 ## 输入处理
@@ -2231,6 +2235,11 @@ class BatchNorm(nn.Module):
 - 不可变 : Number( float int)  str tuple， **不允许值发生变化，若改变了变量的值，相当于新建了一个对象，对于相同值的对象，内存中只有一个对象**
 - python 6 个标准类型：Number String List Tuple Set Dict
 
+## 什么数据类型可以被哈希（set()）
+
+- 可变类型不可以哈希，不可变类型可以哈希
+- dict 也是哈希，为什么可以存 list 这种可变类型呢，因为dict 哈希的是key 不是value
+
 ## 闭包
 
 - 为什么会这样呢？原因就在于create是go的父函数，而go被赋给了一个全局变量，这导致go始终在内存中，而go的存在依赖于create，因此create也始终在内存中，不会在调用结束后，被垃圾回收机制（garbage collection）回收。https://zhuanlan.zhihu.com/p/453787908
@@ -2292,3 +2301,12 @@ print(a_function_requiring_decoration.__name__)
 - 数据并行与模型并行
 
 # 前沿论文
+
+## ReID
+
+## 点云
+
+### pointnet：
+
+- 输入 n*3,(3是三维坐标，n是点的数量)
+- 用一个 对称函数处理（maxpooling）
