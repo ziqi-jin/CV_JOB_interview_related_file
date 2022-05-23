@@ -104,6 +104,7 @@
   - [ReID](#reid)
   - [点云](#点云)
     - [pointnet：](#pointnet)
+
 # 数据结构定义
 
 ## 输入处理
@@ -282,6 +283,18 @@ import heapq
 大顶堆  -heapq.heappop(dui)
 '''
 
+# heapq 也可以接受元组排序，默认安照元组的第一项排序
+
+a = [(1,2),(4,1),(3,5)]
+>>> heapq.heapify(a)
+>>> print(a)
+[(1, 2), (4, 1), (3, 5)]
+>>> heapq.heappop(a)
+(1, 2)
+>>> heapq.heappop(a)
+(3, 5)
+>>> heapq.heappop(a)
+(4, 1)
 ```
 
 ## 二分搜索框架
