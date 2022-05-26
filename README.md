@@ -105,6 +105,7 @@
   - [ReID](#reid)
   - [点云](#点云)
     - [pointnet：](#pointnet)
+  - [讲个故事](#讲个故事)
 # 数据结构定义
 
 ## 输入处理
@@ -2328,3 +2329,47 @@ print(a_function_requiring_decoration.__name__)
 - 输入 n*3,(3是三维坐标，n是点的数量)
 - 用一个 对称函数处理（maxpooling）
 
+
+
+## 讲个故事
+
+-  在Reid 项目中，要实现一个将不同数据集分开的计算loss的操作，这个操作怎么实现呢？比如，我有a张图片和a对应的生产图片，想让两种图片都参与训练，并且最终计算loss分开计算。
+
+  - 主要是两个问题：1是数据怎么保证是n倍数据量，并且每个batch中都有生产图和原图。2是有了这些图把结果分开计算loss。
+
+  - 实现一个可循环生产数据的dataloader
+
+    - ```python
+      class IterLoader:
+          """
+          Wrapper for repeating dataloaders
+          """
+      
+          def __init__(self, loader, length=None):
+              self.loader = loader
+              self.length = length
+              self.iter = None
+      
+          def __len__(self):
+              if self.length is not None:
+                  return self.length
+              return len(self.loader)
+          # dont change self.loader ,just change self.iter 
+          def new_epoch(self, epoch):
+              self.loader.sampler.set_epoch(epoch)
+              self.iter = iter(self.loader)
+          # 不迭代loader ，只迭代 iter，如果iter迭代完了一个轮，就重新用loader给他赋值，又可以重新迭代了
+          def next(self):
+              try:
+                  return next(self.iter)
+              except Exception:
+                  self.iter = iter(self.loader)
+                  return next(self.iter)
+                # from github-openunreid 
+      ```
+
+  - 每个epoch 设置一个 iter次数，这个次数*batchsize 是实际数据集大小
+
+  - 当一个index的图片来了之后，用一个随机概率处理成原图还是处理成生成图，这样就保证了每个batch里都有原图和生成图
+
+  - 在计算loss 时候怎么分开呢，在dataset生成的时候，每一个数据是传回来的字典，字典中存入 flag关键字，用01表示原图和生成图，训练过程中得到一个batch的图片，通过flag得到两种图片的索引信息，利用索引信息将图片和gt标签分成两组，将分好的两组图片在拼合成一个batch，将分好的gt label 也拼合成一个batch，并返回两种数组拼合位置的index。最终根据index就可以重新找到拼合位置与gt计算loss
