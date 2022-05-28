@@ -104,7 +104,6 @@
 - [前沿论文](#前沿论文)
   - [ReID](#reid)
   - [点云](#点云)
-    - [pointnet：](#pointnet)
   - [讲个故事](#讲个故事)
 # 数据结构定义
 
@@ -2305,6 +2304,7 @@ print(a_function_requiring_decoration.__name__)
 ## sampler
 
 - torch.utils.data.DataLoader()中，如果设置了sampler参数，那么，shuffle参数的值应该设置为FALSE，这两个参数是互斥的。
+- sampler是用来处理dataset里面的数据以一个什么样的或者顺序方式通过dataloader输出, init 函数接收 datasoruce 以及batchsize等参数，DataSource就是处理的整个dataset，在 iter函数中，迭代的返回每个batch的对应样本的index，这个index指的就是在dataset中的index。
 
 ## dataloader
 
@@ -2324,10 +2324,6 @@ print(a_function_requiring_decoration.__name__)
 
 ## 点云
 
-### pointnet：
-
-- 输入 n*3,(3是三维坐标，n是点的数量)
-- 用一个 对称函数处理（maxpooling）
 
 
 
