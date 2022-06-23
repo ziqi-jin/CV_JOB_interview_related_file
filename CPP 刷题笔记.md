@@ -24,7 +24,11 @@
   //判断是否包含key,这两个都是没有的标志
   if (name.count(key)==0)
   if (name.find(key)==name.end())
-  
+  // find会返回一个 迭代器，迭代器有2个值，fisrt：key，second：val
+  iter = name.find()
+    iter->fisdt
+    iter->second
+    
   ```
 
 ## 新建 数组
