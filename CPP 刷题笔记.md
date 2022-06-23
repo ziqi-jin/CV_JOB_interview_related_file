@@ -31,10 +31,16 @@
     
   ```
 
-## 新建 数组
+## Vector 数组
 
 - ```c++
+  #include<vector>
   
+  vector<int> v = {0};
+  v.push_back(val)//插入一个值，在尾部
+  v.pop_back()//弹出尾部值
+  v.size()//获取长度
+    
   ```
 
 - 
