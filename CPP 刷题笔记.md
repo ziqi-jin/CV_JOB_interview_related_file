@@ -14,16 +14,17 @@
 ## 哈希表
 
 - ```c++
+  //头文件
+  #include<unordered_map>
   //定义
   unordered_map<int,int> hashtable;
   unordered_map<key_type,val_type> name = {{,},{,}}
+  // 赋值，插入
+  name["key"] = val
+  //判断是否包含key,这两个都是没有的标志
+  if (name.count(key)==0)
+  if (name.find(key)==name.end())
   
-  // 返回第一个元素迭代器
-  begin()
-  // 最后一个
-  end()
-  // 插入键值
-  insert
   ```
 
 ## 新建 数组
