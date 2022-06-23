@@ -11,5 +11,26 @@
   }
   ```
 
+## 哈希表
+
+- ```c++
+  //定义
+  unordered_map<int,int> hashtable;
+  unordered_map<key_type,val_type> name = {{,},{,}}
   
+  // 返回第一个元素迭代器
+  begin()
+  // 最后一个
+  end()
+  // 插入键值
+  insert
+  ```
+
+## 新建 数组
+
+- ```c++
+  
+  ```
+
+- 
 
