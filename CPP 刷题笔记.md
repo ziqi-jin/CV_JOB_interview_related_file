@@ -46,7 +46,7 @@
 
 ## String 
 
-```python
+```c++
 #include<string>
 #include<string.h>
 string 名字("字符串");
@@ -86,5 +86,10 @@ cout<<名字<<endl;
 	cout << str6 << endl;	//654321
 	cout << str7 << endl;	//654321
 
+  String 可以用 + 连接
+  // 接受 string 类型
+  string str;
+  getline(cin,str)
+//cin.get() 可以用来处理换行符，接受不需要的字符
 ```
 
