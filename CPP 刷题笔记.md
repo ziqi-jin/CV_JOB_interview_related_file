@@ -91,5 +91,28 @@ cout<<名字<<endl;
   string str;
   getline(cin,str)
 //cin.get() 可以用来处理换行符，接受不需要的字符
+  
+  string str1 = "dafd";
+	string a = str1+str1+",";
+str1.length()//返回长度
+  //字符串比较直接用 > < 等
+  
+```
+
+## 队列
+
+```c++
+#include<queue>
+// queue<type> name;
+queue<int> q;
+// 判空
+q.empty();
+//队首 队尾 元素 type
+q.front();
+q.bacl();
+// 入队，出队
+q.push(i)
+q.pop()
+
 ```
 
