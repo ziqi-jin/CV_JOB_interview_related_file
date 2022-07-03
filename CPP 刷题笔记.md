@@ -201,6 +201,10 @@ class Solution {
 ## 优先队列
 
 ```c++
+定义：priority_queue<Type, Container, Functional>
+Type 就是数据类型，Container 就是容器类型（Container必须是用数组实现的容器，比如vector,deque等等，但不能用 list。STL里面默认用的是vector），Functional 就是比较的方式，当需要用自定义的数据类型时才需要传入这三个参数，使用基本数据类型时，只需要传入数据类型，默认是大顶堆
+
+
 // priority_queue<int, vector<int>, less<int> > c;  //这样就是大顶堆
 
 priority_queue<int> a; //上一行的简写
@@ -215,5 +219,62 @@ a.top(); // 堆顶
         cout << a.top() << ' ';
         a.pop();
     }
+
+
+// 自定义类型的堆
+
+#include <iostream>
+#include <queue>
+using namespace std;
+ 
+//方法1
+struct tmp1 //运算符重载<
+{
+    int x;
+    tmp1(int a) {x = a;}
+    bool operator<(const tmp1& a) const
+    {
+        return x < a.x; //大顶堆
+    }
+};
+ 
+//方法2
+/*
+struct tmp2 //重写仿函数
+{
+    bool operator() (tmp1 a, tmp1 b) 
+    {
+        return a.x < b.x; //大顶堆
+    }
+};
+*/
+ 
+int main() 
+{
+    tmp1 a(1);
+    tmp1 b(2);
+    tmp1 c(3);
+    priority_queue<tmp1> d;
+    d.push(b);
+    d.push(c);
+    d.push(a);
+    while (!d.empty()) 
+    {
+        cout << d.top().x << '\n';
+        d.pop();
+    }
+    cout << endl;
+ /*
+    priority_queue<tmp1, vector<tmp1>, tmp2> f;
+    f.push(c);
+    f.push(b);
+    f.push(a);
+    while (!f.empty()) 
+    {
+        cout << f.top().x << '\n';
+        f.pop();
+    }
+    */
+}
 ```
 
