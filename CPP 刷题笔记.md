@@ -40,8 +40,48 @@
   v.push_back(val)//插入一个值，在尾部
   v.pop_back()//弹出尾部值
   v.size()//获取长度
+  // ret 是 二维 vector，在赋值里面的vector之前先放进去一个空的
+  ret.push_back(vector <int> ());
+  //清空vector
+  v.clear() //一般用于给二维数组赋值之后
+  // vector 的最大值最小值函数
+  max_element(v.begin(),v.end())
   
-    
+  min_element(v.begin(),v.end())
+  
+  //1）vector容器
+  
+  ///例 vector<int> v;
+  
+  最大值：int maxValue = *max_element(v.begin(),v.end()); 
+  
+  最小值：int minValue = *min_element(v.begin(),v.end());
+  
+  //2）普通数组
+  
+  //例 a[]={1,2,3,4,5,6};
+  
+  最大值：int maxValue = *max_element(a,a+6); 
+  
+  最小值：int minValue = *min_element(a,a+6);
+  
+  2.求数组最大值最小值对应的下标
+  
+  1）vector容器
+  
+  例 vector<int> v;
+  
+  最大值下标：int maxPosition = max_element(v.begin(),v.end()) - v.begin(); 
+  
+  最小值下标：int minPosition = min_element(v.begin(),v.end()) - v.begin();
+  
+  2）普通数组
+  
+  例 a[]={1,2,3,4,5,6};
+  
+  最大值下标：int maxPosition = max_element(a,a+6) - a; 
+  
+  最小值下标：int minPosition = min_element(a,a+6) - a;
   ```
 
 ## String 
@@ -104,6 +144,7 @@ str1.length()//返回长度
 ```c++
 #include<queue>
 // queue<type> name;
+// queue<type*> name ; 注意接受的是指针还是其他的。
 queue<int> q;
 // 判空
 q.empty();
@@ -112,7 +153,7 @@ q.front();
 q.bacl();
 // 入队，出队
 q.push(i)
-q.pop()
+q.pop()// 没有返回值
 
 ```
 
