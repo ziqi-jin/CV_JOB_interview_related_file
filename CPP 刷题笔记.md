@@ -157,3 +157,44 @@ q.pop()// 没有返回值
 
 ```
 
+## 排序
+
+```c++
+#include<algorithm>
+// 返回bool值
+bool cmp(int x,int y){
+	return x % 10 > y % 10;
+}
+
+int num[10] = {65,59,96,13,21,80,72,33,44,99};
+sort(num,num+10,cmp);
+
+
+class Solution {
+    public:
+    static bool cmp(const vector<int>&a,const vector<int>&b){
+        return a[1]>b[1]||(a[1]==b[1]&&a[0]>b[0]);
+    }
+    vector<int> filterRestaurants(vector<vector<int>>& restaurants, int veganFriendly, int maxPrice, int maxDistance) {
+        int size=restaurants.size();
+        vector<vector<int>>res;
+        for(int i=0;i<size;i++)
+        {
+            if((veganFriendly==1&&restaurants[i][2]==0)||restaurants[i][3]>maxPrice||restaurants[i][4]>maxDistance)
+            {
+                continue;
+            }
+            res.push_back(restaurants[i]);
+        }
+        sort(res.begin(),res.end(),cmp);
+        size=res.size();
+        vector<int>ans;
+        for(int i=0;i<size;i++){
+                ans.push_back(res[i][0]);
+        }
+        return ans;
+    }
+};
+
+```
+
