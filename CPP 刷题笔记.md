@@ -198,3 +198,22 @@ class Solution {
 
 ```
 
+## 优先队列
+
+```c++
+// priority_queue<int, vector<int>, less<int> > c;  //这样就是大顶堆
+
+priority_queue<int> a; //上一行的简写
+priority_queue<int, vector<int>, greater<int> > c;  //这样就是小顶堆
+// 入堆
+a.push(i);
+a.pop(); // 弹出
+a.top(); // 堆顶
+
+    while (!a.empty()) 
+    {
+        cout << a.top() << ' ';
+        a.pop();
+    }
+```
+
